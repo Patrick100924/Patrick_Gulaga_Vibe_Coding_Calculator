@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Professional Calculator</title>
+
+  <style>
+    /* =========================
+       GLOBAL STYLES
+    ========================= */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      background-color: #0f172a;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    /* =========================
+       CALCULATOR CONTAINER
+    ========================= */
+    .calculator {
+      background: #1e293b;
+      padding: 20px;
+      border-radius: 12px;
+      width: 320px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+    }
+
+    /* =========================
+       DISPLAY
+    ========================= */
+    .display {
+      width: 100%;
+      height: 60px;
+      font-size: 24px;
+      text-align: right;
+      padding: 10px;
+      border: none;
+      border-radius: 8px;
+      background: #0f172a;
+      color: #fff;
+      margin-bottom: 15px;
+    }
+
+    /* =========================
+       BUTTON GRID
+    ========================= */
+    .buttons {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+    }
+
+    /* =========================
+       BUTTON STYLE
+    ========================= */
+    .btn {
+      padding: 18px;
+      font-size: 18px;
+      border: none;
+      border-radius: 8px;
+      background: #334155;
+      color: #fff;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .btn:hover {
+      background: #475569;
+    }
+
+    /* Operators */
+    .operator {
+      background: #2563eb;
+    }
+
+    .operator:hover {
+      background: #1d4ed8;
+    }
+
+    /* Equals */
+    .equals {
+      background: #22c55e;
+    }
+
+    .equals:hover {
+      background: #16a34a;
+    }
+
+    /* Clear */
+    .clear {
+      background: #ef4444;
+      grid-column: span 4;
+    }
+
+    .clear:hover {
+      background: #dc2626;
+    }
+
+    /* Responsive */
+    @media (max-width: 400px) {
+      .calculator {
+        width: 95%;
+      }
+      .btn {
+        padding: 15px;
+        font-size: 16px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <main class="calculator">
+
+    <!-- DISPLAY -->
+    <input type="text" class="display" value="0" readonly>
+
+    <!-- BUTTONS -->
+    <section class="buttons">
+
+      <button class="btn" data-value="7">7</button>
+      <button class="btn" data-value="8">8</button>
+      <button class="btn" data-value="9">9</button>
+      <button class="btn operator" data-value="/">÷</button>
+
+      <button class="btn" data-value="4">4</button>
+      <button class="btn" data-value="5">5</button>
+      <button class="btn" data-value="6">6</button>
+      <button class="btn operator" data-value="*">×</button>
+
+      <button class="btn" data-value="1">1</button>
+      <button class="btn" data-value="2">2</button>
+      <button class="btn" data-value="3">3</button>
+      <button class="btn operator" data-value="-">−</button>
+
+      <button class="btn" data-value="0">0</button>
+      <button class="btn" data-value=".">.</button>
+      <button class="btn equals" data-value="=">=</button>
+      <button class="btn operator" data-value="+">+</button>
+
+      <button class="btn clear" data-value="C">C</button>
+
+    </section>
+
+  </main>
+
+  <script>
+    // ===============================
+    // DOM REFERENCES
+    // ===============================
+    const display = document.querySelector(".display");
+    const buttonsContainer = document.querySelector(".buttons");
+
+    // ===============================
+    // STATE (Calculator Memory)
+    // ===============================
+    let currentInput = "";
+
+    // ===============================
+    // EVENT DELEGATION
+    // ===============================
+    buttonsContainer.addEventListener("click", function (e) {
+
+      // ===============================
+      // FLOW 1: USER CLICK
+      // ===============================
+
+      // ===============================
+      // FLOW 2: IDENTIFY BUTTON
+      // ===============================
+      // e.target = the exact clicked element
+      if (!e.target.classList.contains("btn")) return;
+
+      const value = e.target.dataset.value;
+
+      // ===============================
+      // FLOW 3: LOGIC
+      // ===============================
+
+      if (value === "C") {
+        currentInput = "";
+        updateDisplay("0");
+        return;
+      }
+
+      if (value === "=") {
+        try {
+          const result = eval(currentInput);
+          currentInput = result.toString();
+          updateDisplay(currentInput);
+        } catch {
+          updateDisplay("Error");
+          currentInput = "";
+        }
+        return;
+      }
+
+      // Append input
+      currentInput += value;
+
+      // ===============================
+      // FLOW 4: UPDATE DOM
+      // ===============================
+      updateDisplay(currentInput);
+    });
+
+    // ===============================
+    // DISPLAY FUNCTION
+    // ===============================
+    function updateDisplay(value) {
+      // Using value instead of innerHTML for safety
+      display.value = value;
+    }
+
+    /*
+    ===============================
+    EDUCATIONAL FLOW SUMMARY
+    ===============================
+
+    1. User clicks a button
+    2. Event bubbles to parent (.buttons)
+    3. e.target identifies the clicked button
+    4. JS reads data-value
+    5. Logic processes input
+    6. Display updates via DOM
+
+    ===============================
+    WHY e.target?
+    ===============================
+
+    Because it tells us EXACTLY which element was clicked.
+    Without it, we cannot differentiate buttons.
+
+    This is the foundation of:
+    → Event Delegation
+    → Scalable DOM handling
+    */
+  </script>
+
+</body>
+</html>
